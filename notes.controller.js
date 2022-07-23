@@ -30,7 +30,21 @@ async function printNotes() {
     );
 }
 
+async function removeNote(id) {
+    const notes = await getNotes();
+    const noteIdx = notes.findIndex((n) => n.id == id);
+
+    if (noteIdx < 0) return;
+
+    const [removedNote] = notes.splice(noteIdx, 1);
+    await fs.writeFile(notesPath, JSON.stringify(notes));
+
+    console.log(chalk.bgRed(`Note ${removedNote.id} was deleted:`));
+    console.log(chalk.red(removedNote.title));
+}
+
 module.exports = {
     addNote,
     printNotes,
+    removeNote,
 };
