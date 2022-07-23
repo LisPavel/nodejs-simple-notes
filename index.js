@@ -3,7 +3,12 @@ const express = require("express");
 const path = require("path");
 // const path = require("path");
 
-const { addNote, getNotes, removeNote } = require("./notes.controller");
+const {
+    addNote,
+    getNotes,
+    removeNote,
+    updateNote,
+} = require("./notes.controller");
 
 const PORT = 3000;
 const APP_NAME = "Express notes";
@@ -19,6 +24,7 @@ app.use(
         extended: true,
     })
 );
+app.use(express.json());
 
 app.get("/", async (req, res) => {
     res.render("index", {
@@ -44,6 +50,16 @@ app.delete("/:id", async (req, res) => {
 
     await removeNote(id);
 
+    res.render("index", {
+        title: APP_NAME,
+        notes: await getNotes(),
+        created: false,
+    });
+});
+
+app.put("/:id", async (req, res) => {
+    console.log(req.params.id, req.body);
+    await updateNote(req.params.id, req.body.title);
     res.render("index", {
         title: APP_NAME,
         notes: await getNotes(),
