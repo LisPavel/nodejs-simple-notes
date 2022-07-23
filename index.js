@@ -1,5 +1,7 @@
 const chalk = require("chalk");
-const http = require("http");
+const express = require("express");
+// express
+// const http = require("http");
 const fs = require("fs/promises");
 const path = require("path");
 
@@ -9,33 +11,24 @@ const PORT = 3000;
 
 const pagesPath = path.resolve(__dirname, "pages");
 
-const server = http.createServer(async (req, res) => {
-    if (req.method === "GET") {
-        const content = await fs.readFile(
-            path.resolve(pagesPath, "index.html")
-        );
-        res.writeHead(200, {
-            "Content-Type": "text/html",
-        });
-        res.end(content);
-    } else if (req.method === "POST") {
-        const body = [];
+const app = express();
 
-        res.writeHead(200, "Content-Type: text/plain; charset: utf-8");
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+);
 
-        req.on("data", (data) => {
-            body.push(Buffer.from(data));
-        });
-
-        req.on("end", async () => {
-            const title = body.toString().split("=")[1].replace(/\+/g, " ");
-            await addNote(title);
-
-            res.end(`success ${title}`);
-        });
-    }
+app.get("/", (req, res) => {
+    res.sendFile(path.resolve(pagesPath, "index.html"));
 });
 
-server.listen(PORT, () => {
+app.post("/", async (req, res) => {
+    // console.log(req.body);
+    await addNote(req.body.title);
+    res.sendFile(path.resolve(pagesPath, "index.html"));
+});
+
+app.listen(PORT, () => {
     console.log(chalk.bgGreen(`server listening on port ${PORT}`));
 });
