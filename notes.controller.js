@@ -25,7 +25,9 @@ async function addNote(title) {
 async function printNotes() {
     const notes = await getNotes();
     console.log(chalk.bgBlueBright(`There we have ${notes.length} notes:`));
-    notes.forEach((n) => console.log(chalk.cyan(n.title)));
+    notes.forEach((n) =>
+        console.log(chalk.redBright(n.id), chalk.cyan(n.title))
+    );
 }
 
 module.exports = {
