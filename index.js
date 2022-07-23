@@ -1,17 +1,16 @@
 const chalk = require("chalk");
 const express = require("express");
-// express
-// const http = require("http");
-const fs = require("fs/promises");
-const path = require("path");
+// const path = require("path");
 
-const { addNote } = require("./notes.controller");
+const { addNote, getNotes } = require("./notes.controller");
 
 const PORT = 3000;
-
-const pagesPath = path.resolve(__dirname, "pages");
-
+const APP_NAME = "Express notes";
+// const pagesPath = path.resolve(__dirname, "pages");
 const app = express();
+
+app.set("view engine", "ejs");
+app.set("views", "pages");
 
 app.use(
     express.urlencoded({
@@ -19,14 +18,21 @@ app.use(
     })
 );
 
-app.get("/", (req, res) => {
-    res.sendFile(path.resolve(pagesPath, "index.html"));
+app.get("/", async (req, res) => {
+    res.render("index", {
+        title: APP_NAME,
+        notes: await getNotes(),
+    });
+    // res.sendFile(path.resolve(pagesPath, "index.html"));
 });
 
 app.post("/", async (req, res) => {
-    // console.log(req.body);
     await addNote(req.body.title);
-    res.sendFile(path.resolve(pagesPath, "index.html"));
+    res.render("index", {
+        title: APP_NAME,
+        notes: await getNotes(),
+    });
+    // res.sendFile(path.resolve(pagesPath, "index.html"));
 });
 
 app.listen(PORT, () => {
