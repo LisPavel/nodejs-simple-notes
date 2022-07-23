@@ -21,8 +21,9 @@ yargs.command({
 yargs.command({
     command: "list",
     describe: "list all todo",
-    handler() {
-        console.log(getNotes());
+    async handler() {
+        const notes = await getNotes();
+        console.log(notes);
     },
 });
 
