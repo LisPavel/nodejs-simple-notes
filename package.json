@@ -16,5 +16,8 @@
     "@types/yargs": "^17.0.10",
     "chalk": "^4.1.2",
     "yargs": "^17.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.6"
   }
 }
